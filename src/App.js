@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import TrainModel from './components/TrainModel';
+
 import {
   Button,
   TextInput,
@@ -57,20 +59,10 @@ function App() {
       {/* Tabs */}
       <Tabs type="default">
         {/* Training / Create Model Tab */}
-        <Tab label="Training / Create Model" tabIndex={0}>
-          <div className="tab-content">
-            <TextInput
-              id="training-input"
-              labelText="Enter training data info"
-              placeholder="Enter model name or file"
-              value={trainingInput}
-              onChange={(e) => setTrainingInput(e.target.value)}
-            />
-            <Button kind="primary" onClick={() => handleSubmit('training')}>
-              Submit
-            </Button>
-          </div>
+        <Tab label="Training / Create Model">
+          <TrainModel apiKey={apiKey} region={region} />
         </Tab>
+
 
         {/* Delete Model Tab */}
         <Tab label="Delete Model" tabIndex={1}>
