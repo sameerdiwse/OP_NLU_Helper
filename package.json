@@ -2,6 +2,7 @@
   "name": "op-nlu-helper",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/app/jspview/helper",
   "dependencies": {
     "@carbon/icons-react": "^11.73.0",
     "@testing-library/dom": "^10.4.1",
