@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import TrainModel from './components/TrainModel';
+import ListModels from './components/ListModels';
+
 
 import {
   Button,
@@ -19,12 +21,13 @@ function App() {
   const [result, setResult] = useState('');
 
   const regions = [
-    { id: 'us-east', label: 'US East' },
-    { id: 'us-west', label: 'US West' },
-    { id: 'eu-central', label: 'EU Central' },
-    { id: 'ap-south', label: 'AP South' },
-    { id: 'sa-east', label: 'SA East' }
-  ];
+  { id: 'au-syd', label: 'AU Sydney' },
+  { id: 'us-south', label: 'US South' },
+  { id: 'eu-gb', label: 'EU London' },
+  { id: 'eu-de', label: 'EU Frankfurt' },
+  { id: 'jp-tok', label: 'JP Tokyo' }
+];
+
 
   const handleSubmit = (tab) => {
     let inputValue = '';
@@ -62,6 +65,11 @@ function App() {
         <Tab label="Training / Create Model">
           <TrainModel apiKey={apiKey} region={region} />
         </Tab>
+
+        <Tab label="My Models">
+          <ListModels apiKey={apiKey} region={region} />
+        </Tab>
+
 
 
         {/* Delete Model Tab */}

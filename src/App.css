@@ -29,3 +29,9 @@
   text-align: center;
   word-break: break-word;
 }
+
+.bx--data-table td,
+.bx--data-table th {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}

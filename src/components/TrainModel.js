@@ -6,8 +6,17 @@ function TrainModel({ apiKey, region }) {
   const [modelVersion, setModelVersion] = useState('1.0.1');
   const [trainingFile, setTrainingFile] = useState(null);
   const [response, setResponse] = useState('');
+  const [fileError, setFileError] = useState('');
+
 
   const handleTrain = async () => {
+
+    if (!trainingFile) {
+    setFileError('Training file is required (CSV or JSON)');
+    return;
+    }
+     setFileError('');
+
     if (!apiKey || !region || !trainingFile || !modelName) {
       alert('All fields are required');
       return;
@@ -42,26 +51,37 @@ function TrainModel({ apiKey, region }) {
     <div className="tab-content">
       <TextInput
         id="model-name"
-        labelText="Model Name"
+        labelText="Model Name (Optional)"
         value={modelName}
         onChange={(e) => setModelName(e.target.value)}
       />
 
       <TextInput
         id="model-version"
-        labelText="Model Version"
+        labelText="Model Version (Optional)"
         value={modelVersion}
         onChange={(e) => setModelVersion(e.target.value)}
       />
 
       <FileUploader
-        labelTitle="Training File"
+        labelTitle={
+        <>
+            Training File <span style={{ color: 'red' }}>*</span>
+        </>
+        }
+
         labelDescription="Upload CSV or JSON training file"
         buttonLabel="Add file"
         accept={['.csv', '.json']}
         multiple={false}
         onChange={(e) => setTrainingFile(e.target.files[0])}
       />
+
+      {fileError && (
+    <div style={{ color: '#da1e28', marginTop: '0.5rem' }}>
+        {fileError}
+    </div>
+        )}
 
       <Button kind="primary" onClick={handleTrain}>
         Train Model
