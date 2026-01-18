@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from 'react';
+import { Copy } from '@carbon/icons-react';
+
+
 import {
-  DataTable,
-  Table,
-  TableHead,
-  TableRow,
+    DataTable,
+    Table,
+    TableHead,
+    TableRow,
   TableHeader,
   TableBody,
-  TableCell
+  TableCell,
+  Button
 } from 'carbon-components-react';
 
-const { Header, Body } = DataTable;
-
 function ListModels({ apiKey, region }) {
-  const [rows, setRows] = useState([]);
+    const [rows, setRows] = useState([]);
+    
+  const [copiedId, setCopiedId] = useState(null);
+  const headers = [
+    { key: 'name', header: 'Model Name' },
+    { key: 'modelId', header: 'Model ID' },
+    { key: 'status', header: 'Status' }
+  ];
 
-  useEffect(() => {
+  const fetchModels = () => {
     if (!apiKey || !region) return;
 
     fetch(
@@ -27,7 +36,7 @@ function ListModels({ apiKey, region }) {
     )
       .then((res) => res.json())
       .then((data) => {
-        const formattedRows = data.models.map((m) => ({
+        const formattedRows = (data.models || []).map((m) => ({
           id: m.model_id,
           name: m.name,
           modelId: m.model_id,
@@ -35,48 +44,76 @@ function ListModels({ apiKey, region }) {
         }));
         setRows(formattedRows);
       });
+  };
+
+  useEffect(() => {
+    fetchModels();
   }, [apiKey, region]);
 
-  const headers = [
-    { key: 'name', header: 'Model Name' },
-    { key: 'modelId', header: 'Model ID' },
-     { key: 'status', header: 'Status' }
-  ];
-
   if (!rows.length) {
-  return (
-    <div style={{ padding: '1rem', color: '#525252' }}>
-      No classification models found.
-    </div>
-  );
-}
+    return (
+      <div style={{ padding: '1rem', color: '#525252' }}>
+        No classification models found.
+      </div>
+    );
+  }
 
-
   return (
-    <DataTable rows={rows} headers={headers}>
-      {({ rows, headers, getHeaderProps, getRowProps }) => (
-        <Table size='lg'>
-          <TableHead>
-            <TableRow>
-              {headers.map((header) => (
-                <TableHeader {...getHeaderProps({ header })}>
-                  {header.header}
-                </TableHeader>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow {...getRowProps({ row })}>
-                {row.cells.map((cell) => (
-                  <TableCell key={cell.id}>{cell.value}</TableCell>
+    <>
+      <div style={{ marginBottom: '1rem' }}>
+        <Button size="sm" kind="secondary" onClick={fetchModels}>
+          Refresh
+        </Button>
+      </div>
+
+      <DataTable rows={rows} headers={headers}>
+        {({ rows, headers, getHeaderProps, getRowProps }) => (
+          <Table size="lg">
+            <TableHead>
+              <TableRow>
+                {headers.map((header) => (
+                  <TableHeader {...getHeaderProps({ header })}>
+                    {header.header}
+                  </TableHeader>
                 ))}
               </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row) => (
+                <TableRow {...getRowProps({ row })}>
+                  {row.cells.map((cell) => (
+            <TableCell key={cell.id}>
+                {cell.info.header === 'modelId' ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span>{cell.value}</span>
+                    <Copy
+                    size={16}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                        navigator.clipboard.writeText(cell.value);
+                        setCopiedId(cell.value);
+                        setTimeout(() => setCopiedId(null), 1500);
+                    }}
+                    />
+                    {copiedId === cell.value && (
+                    <span style={{ color: '#198038', fontSize: '0.75rem' }}>
+                        Copied
+                    </span>
+                    )}
+                </div>
+                ) : (
+                cell.value
+                )}
+            </TableCell>
             ))}
-          </TableBody>
-        </Table>
-      )}
-    </DataTable>
+
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </DataTable>
+    </>
   );
 }
 

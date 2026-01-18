@@ -63,18 +63,26 @@ function TrainModel({ apiKey, region }) {
         onChange={(e) => setModelVersion(e.target.value)}
       />
 
+        <label className="bx--label">
+        Training File <span style={{ color: '#da1e28' }}>*</span>
+        </label>
       <FileUploader
-        labelTitle={
-        <>
-            Training File <span style={{ color: 'red' }}>*</span>
-        </>
-        }
-
+        labelTitle=""
         labelDescription="Upload CSV or JSON training file"
         buttonLabel="Add file"
         accept={['.csv', '.json']}
         multiple={false}
-        onChange={(e) => setTrainingFile(e.target.files[0])}
+        onChange={(evt) => {
+          // evt.target.files works for single-file selection
+          const file = evt?.target?.files?.[0];
+          if (file) {
+            setTrainingFile(file);
+          } else {
+            setTrainingFile(null);
+          }
+        }}
+        filenameStatus="edit"
+        uploadFile={() => {}} // prevent auto-upload
       />
 
       {fileError && (
@@ -87,9 +95,32 @@ function TrainModel({ apiKey, region }) {
         Train Model
       </Button>
 
-      {response && (
-        <pre style={{ marginTop: '1rem' }}>{response}</pre>
-      )}
+      {response && (() => {
+  try {
+    const data = JSON.parse(response);
+    if (data.status === 'training') {
+      return (
+        <div
+          style={{
+            marginTop: '1rem',
+            padding: '1rem',
+            borderRadius: '8px',
+            backgroundColor: '#daf5d4', // light green
+            color: '#05400a', // dark green text
+          }}
+        >
+          Model is currently training...
+        </div>
+      );
+    }
+      } catch (e) {
+        // fallback if response is not JSON
+        return <pre style={{ marginTop: '1rem' }}>{response}</pre>;
+      }
+
+      // default: show full response if not training
+      return <pre style={{ marginTop: '1rem' }}>{response}</pre>;
+    })()}
     </div>
   );
 }
