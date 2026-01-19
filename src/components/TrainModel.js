@@ -7,15 +7,14 @@ function TrainModel({ apiKey, region }) {
   const [trainingFile, setTrainingFile] = useState(null);
   const [response, setResponse] = useState('');
   const [fileError, setFileError] = useState('');
-
+  const [trainingToast, setTrainingToast] = useState(false);
 
   const handleTrain = async () => {
-
     if (!trainingFile) {
-    setFileError('Training file is required (CSV or JSON)');
-    return;
+      setFileError('Training file is required (CSV or JSON)');
+      return;
     }
-     setFileError('');
+    setFileError('');
 
     if (!apiKey || !region || !trainingFile || !modelName) {
       alert('All fields are required');
@@ -34,13 +33,24 @@ function TrainModel({ apiKey, region }) {
         {
           method: 'POST',
           headers: {
-            Authorization: `Basic ${btoa('apikey:' + apiKey)}`
+            Authorization: `Basic ${btoa('apikey:' + apiKey)}`,
           },
-          body: formData
+          body: formData,
         }
       );
 
       const data = await res.json();
+
+      // Show training toast if status is training
+      if (data.status === 'training') {
+        setTrainingToast(true);
+
+        // Hide toast after 5 seconds
+        setTimeout(() => {
+          setTrainingToast(false);
+        }, 5000);
+      }
+
       setResponse(JSON.stringify(data, null, 2));
     } catch (err) {
       setResponse('Error creating model');
@@ -49,6 +59,27 @@ function TrainModel({ apiKey, region }) {
 
   return (
     <div className="tab-content">
+      {/* Toast card */}
+      {trainingToast && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '1rem',
+            right: '1rem',
+            padding: '1rem 1.5rem',
+            borderRadius: '8px',
+            backgroundColor: '#daf5d4', // light green
+            color: '#05400a', // dark green text
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            opacity: trainingToast ? 1 : 0,
+            transition: 'opacity 0.5s ease-in-out',
+            zIndex: 1000,
+          }}
+        >
+          Model is currently training...
+        </div>
+      )}
+
       <TextInput
         id="model-name"
         labelText="Model Name (Optional)"
@@ -63,9 +94,9 @@ function TrainModel({ apiKey, region }) {
         onChange={(e) => setModelVersion(e.target.value)}
       />
 
-        <label className="bx--label">
+      <label className="bx--label">
         Training File <span style={{ color: '#da1e28' }}>*</span>
-        </label>
+      </label>
       <FileUploader
         labelTitle=""
         labelDescription="Upload CSV or JSON training file"
@@ -73,7 +104,6 @@ function TrainModel({ apiKey, region }) {
         accept={['.csv', '.json']}
         multiple={false}
         onChange={(evt) => {
-          // evt.target.files works for single-file selection
           const file = evt?.target?.files?.[0];
           if (file) {
             setTrainingFile(file);
@@ -86,41 +116,28 @@ function TrainModel({ apiKey, region }) {
       />
 
       {fileError && (
-    <div style={{ color: '#da1e28', marginTop: '0.5rem' }}>
-        {fileError}
-    </div>
-        )}
+        <div style={{ color: '#da1e28', marginTop: '0.5rem' }}>{fileError}</div>
+      )}
 
       <Button kind="primary" onClick={handleTrain}>
         Train Model
       </Button>
 
+      {/* Response display */}
       {response && (() => {
-  try {
-    const data = JSON.parse(response);
-    if (data.status === 'training') {
-      return (
-        <div
-          style={{
-            marginTop: '1rem',
-            padding: '1rem',
-            borderRadius: '8px',
-            backgroundColor: '#daf5d4', // light green
-            color: '#05400a', // dark green text
-          }}
-        >
-          Model is currently training...
-        </div>
-      );
-    }
-      } catch (e) {
-        // fallback if response is not JSON
-        return <pre style={{ marginTop: '1rem' }}>{response}</pre>;
-      }
+        try {
+          const data = JSON.parse(response);
+          if (data.status === 'training') {
+            // already showing toast, skip inline card
+            return null;
+          }
+        } catch (e) {
+          return <pre style={{ marginTop: '1rem' }}>{response}</pre>;
+        }
 
-      // default: show full response if not training
-      return <pre style={{ marginTop: '1rem' }}>{response}</pre>;
-    })()}
+        // show full JSON if not training
+        return <pre style={{ marginTop: '1rem' }}>{response}</pre>;
+      })()}
     </div>
   );
 }

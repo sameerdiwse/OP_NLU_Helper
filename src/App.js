@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import TrainModel from './components/TrainModel';
 import ListModels from './components/ListModels';
-
 import {
   Button,
   TextInput,
@@ -13,7 +12,8 @@ import './App.css';
 
 function App() {
   const [apiKey, setApiKey] = useState('');
-  const [region, setRegion] = useState(null); // ✅ FIXED
+  const [showApiKey, setShowApiKey] = useState(false);          // ← added for toggle
+  const [region, setRegion] = useState(null);
   const [trainingInput, setTrainingInput] = useState('');
   const [deleteInput, setDeleteInput] = useState('');
   const [testInput, setTestInput] = useState('');
@@ -40,16 +40,37 @@ function App() {
 
   return (
     <div className="app-container">
+
+{/* Title */}
+      <div className="app-title" style={{ marginBottom: '1rem', textAlign: 'center' }}>
+        <h1>NLU Model Hub</h1>
+      </div>
+
       {/* API Key and Region */}
       <div className="top-section">
-        <TextInput
-          id="api-key"
-          labelText="API Key"
-          placeholder="Enter your API key"
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
-          type="password"
-        />
+        <div className="bx--text-input-wrapper" style={{ position: 'relative' }}>
+          <TextInput
+            id="api-key"
+            labelText="API Key"
+            placeholder="Enter your API key"
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+            type={showApiKey ? 'text' : 'password'}
+          />
+          <button
+            type="button"
+            className="bx--text-input--password__visibility__toggle"
+            onClick={() => setShowApiKey(!showApiKey)}
+            aria-label={showApiKey ? "Hide API key" : "Show API key"}
+            title={showApiKey ? "Hide API key" : "Show API key"}
+          >
+            {showApiKey ? 'Hide' : 'Show'}
+            {/* 
+              If you install @carbon/icons-react, replace the line above with:
+              {showApiKey ? <ViewOff16 /> : <View16 />}
+            */}
+          </button>
+        </div>
 
         <Dropdown
           id="region-dropdown"

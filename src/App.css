@@ -35,3 +35,33 @@
   padding-left: 1rem;
   padding-right: 1rem;
 }
+
+.bx--text-input-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;           /* or whatever width you want */
+}
+
+.bx--text-input--password__visibility__toggle {
+  position: absolute;
+  right: 1rem;
+  top: 68%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #0f62fe;        /* Carbon blue - adjust to match your theme */
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.bx--text-input--password__visibility__toggle:hover {
+  color: #0043ce;
+  text-decoration: underline;
+}
+
+/* If using icons instead of text, you can center better */
+.bx--text-input--password__visibility__toggle svg {
+  vertical-align: middle;
+}
