@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import TrainModel from './components/TrainModel';
 import ListModels from './components/ListModels';
+import DeleteModel from './components/DeleteModel';
+import TestModel from './components/TestModel';
 import {
   Button,
   TextInput,
@@ -88,38 +90,16 @@ function App() {
           <TrainModel apiKey={apiKey} region={region} />
         </Tab>
 
-        <Tab label="My Models">
+        {/* <Tab label="My Models">
           <ListModels apiKey={apiKey} region={region} />
-        </Tab>
+        </Tab> */}
 
         <Tab label="Delete Model">
-          <div className="tab-content">
-            <TextInput
-              id="delete-input"
-              labelText="Enter model ID to delete"
-              placeholder="Model ID"
-              value={deleteInput}
-              onChange={(e) => setDeleteInput(e.target.value)}
-            />
-            <Button kind="primary" onClick={() => handleSubmit('delete')}>
-              Submit
-            </Button>
-          </div>
+          <DeleteModel apiKey={apiKey} region={region} />
         </Tab>
 
         <Tab label="Test Model">
-          <div className="tab-content">
-            <TextInput
-              id="test-input"
-              labelText="Enter test input"
-              placeholder="Test data"
-              value={testInput}
-              onChange={(e) => setTestInput(e.target.value)}
-            />
-            <Button kind="primary" onClick={() => handleSubmit('test')}>
-              Submit
-            </Button>
-          </div>
+          <TestModel apiKey={apiKey} region={region} />
         </Tab>
       </Tabs>
 
