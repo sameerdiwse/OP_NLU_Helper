@@ -54,7 +54,7 @@ function DeleteModel({ apiKey, region }) {
   };
 
   return (
-    <div style={{ maxWidth: '500px' }}>
+    <div style={{ width: '400px' }}>
       <TextInput
         id="delete-model-id"
         labelText="Model ID"

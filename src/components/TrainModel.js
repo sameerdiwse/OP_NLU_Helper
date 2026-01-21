@@ -82,14 +82,14 @@ function TrainModel({ apiKey, region }) {
 
       <TextInput
         id="model-name"
-        labelText="Model Name (Optional)"
+        labelText="Model Name"
         value={modelName}
         onChange={(e) => setModelName(e.target.value)}
       />
 
       <TextInput
         id="model-version"
-        labelText="Model Version (Optional)"
+        labelText="Model Version"
         value={modelVersion}
         onChange={(e) => setModelVersion(e.target.value)}
       />

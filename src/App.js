@@ -90,16 +90,16 @@ function App() {
           <TrainModel apiKey={apiKey} region={region} />
         </Tab>
 
-        {/* <Tab label="My Models">
+        { <Tab label="My Models">
           <ListModels apiKey={apiKey} region={region} />
-        </Tab> */}
-
-        <Tab label="Delete Model">
-          <DeleteModel apiKey={apiKey} region={region} />
-        </Tab>
+        </Tab> }
 
         <Tab label="Test Model">
           <TestModel apiKey={apiKey} region={region} />
+        </Tab>
+
+        <Tab label="Delete Model">
+          <DeleteModel apiKey={apiKey} region={region} />
         </Tab>
       </Tabs>
 
